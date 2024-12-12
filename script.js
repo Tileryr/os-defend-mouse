@@ -19,12 +19,6 @@ canvas.addEventListener('pointermove', (e) => {
 
 // canvas.addEventListener('pointerleave', death)
 
-function lerp(a, b, t) {
-    return a+(b-a)*t
-}
-
-function death() {window.location.reload()}
-
 const player = new Player({
     position: {
         x: 0,
@@ -55,17 +49,6 @@ function animate() {
     player.update()
 }
 
-function debounce(func, timeout = 300) {
-    console.log(func)
-    
-    let timer;
-    console.log(timer)
-    return (...args) => {
-        console.log("size")
-        clearTimeout(timer);
-        timer = setTimeout(() => { func.apply(this, args); }, timeout);
-    };
-}
 
 function startup() {
     const startupScreen = document.querySelector(".startup");
@@ -81,16 +64,6 @@ function startup() {
             }
         }, i*200)
     });
-}
-
-function resizeWindow() {
-    canvas.width = document.body.clientWidth;
-    canvas.height = document.body.clientHeight
-    
-}
-function fullscreen(element) {
-    element.classList.add("fullscreen")
-    window.onresize = debounce(() => resizeWindow())
 }
 
 window.onload = () => {
