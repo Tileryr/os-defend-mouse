@@ -1,8 +1,8 @@
 const canvas = document.querySelector('canvas')
 const ctx = canvas.getContext('2d')
 
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
+canvas.width = 800
+canvas.height = 450
 
 ctx.fillRect(0, 0, canvas.width, canvas.height)
 
@@ -10,14 +10,20 @@ var mouse = {
     x: 0,
     y: 0
 }
-document.addEventListener('pointermove', (e) => {
-    mouse.x = e.x
-    mouse.y = e.y
+
+canvas.addEventListener('pointermove', (e) => {
+    var rect = canvas.getBoundingClientRect();
+    mouse.x = e.pageX - rect.left
+    mouse.y = e.pageY - rect.top
 })
+
+canvas.addEventListener('pointerleave', death)
 
 function lerp(a, b, t) {
     return a+(b-a)*t
 }
+
+function death() {window.location.reload()}
 
 const player = new Player({
     position: {
@@ -49,4 +55,22 @@ function animate() {
     player.update()
 }
 
-animate()
+function startup() {
+    const startupScreen = document.querySelector(".startup");
+    const lines = startupScreen.querySelectorAll("p");
+    lines.forEach((line, i) => {
+        setTimeout(() => {
+            line.classList.remove("hidden");
+            if(i === 2) {
+            setTimeout(() => {
+            startupScreen.classList.add("hidden");
+            animate();
+            }, 400)
+            }
+        }, i*200)
+    });
+    
+}
+window.addEventListener("load", (e) => {
+    startup()
+});

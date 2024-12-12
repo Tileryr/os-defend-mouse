@@ -1,3 +1,36 @@
-html, body {
+html {
+    /* PLACEHOLDER */
+    background-image: url("https://icanbecreative.com/res/freeweb/2011/04/oudjat_dark.png");
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-size: 16px;
+}
+
+html, body, p {
     margin: 0;
 }
+
+.window {
+    padding: 16px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.startup {
+    padding: 8px;
+    height: 100vh;
+    background-color: black;
+}
+
+.startup > p {
+    font-family: 'Courier Prime', Courier, monospace;
+    color: white;
+    font-size: 2rem;
+}
+.hidden {
+    visibility: hidden;
+}
+
