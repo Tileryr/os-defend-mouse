@@ -49,7 +49,6 @@ function animate() {
     player.update()
 }
 
-
 function startup() {
     const startupScreen = document.querySelector(".startup");
     const lines = startupScreen.querySelectorAll("p");
