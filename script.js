@@ -17,7 +17,7 @@ canvas.addEventListener('pointermove', (e) => {
     mouse.y = e.pageY - rect.top
 })
 
-canvas.addEventListener('pointerleave', death)
+// canvas.addEventListener('pointerleave', death)
 
 function lerp(a, b, t) {
     return a+(b-a)*t
@@ -55,6 +55,18 @@ function animate() {
     player.update()
 }
 
+function debounce(func, timeout = 300) {
+    console.log(func)
+    
+    let timer;
+    console.log(timer)
+    return (...args) => {
+        console.log("size")
+        clearTimeout(timer);
+        timer = setTimeout(() => { func.apply(this, args); }, timeout);
+    };
+}
+
 function startup() {
     const startupScreen = document.querySelector(".startup");
     const lines = startupScreen.querySelectorAll("p");
@@ -69,8 +81,19 @@ function startup() {
             }
         }, i*200)
     });
+}
+
+function resizeWindow() {
+    canvas.width = document.body.clientWidth;
+    canvas.height = document.body.clientHeight
     
 }
-window.addEventListener("load", (e) => {
+function fullscreen(element) {
+    element.classList.add("fullscreen")
+    window.onresize = debounce(() => resizeWindow())
+}
+
+window.onload = () => {
     startup()
-});
+    fullscreen(document.querySelector("#game"))
+}

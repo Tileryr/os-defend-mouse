@@ -19,6 +19,8 @@ class Player extends Entity {
     draw() {
         ctx.strokeStyle = 'white'
         ctx.lineWidth = '4'
+        ctx.shadowBlur = 5
+        ctx.shadowColor = 'white'
         ctx.strokeRect(this.position.x, this.position.y, 30, this.height)
     }
 
@@ -31,6 +33,7 @@ class Player extends Entity {
 
 class Enemy extends Entity {
     draw() {
+        ctx.shadowBlur = 0
         ctx.strokeStyle = 'red'
         ctx.strokeRect(this.position.x, this.position.y, 30, this.height)
     }
