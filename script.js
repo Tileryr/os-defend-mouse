@@ -24,10 +24,6 @@ const player = new Player({
         x: 0,
         y: 0
     },
-    velocity: {
-        x: 0,
-        y: 0
-    }
 })
 
 const enemy = new Triangle({
@@ -37,8 +33,9 @@ const enemy = new Triangle({
     },
     velocity: {
         x: 0,
-        y: 10
-    }
+        y: 0
+    },
+    speed: 5
 })
 
 function animate() {

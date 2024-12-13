@@ -2,6 +2,10 @@ class Entity {
     constructor({ position, velocity }) {
         this.position = position
         this.velocity = velocity
+        this.attackBox = {
+            position: {x: 0, y: 0},
+            length: 20,
+        }
     }
 
     draw() {
@@ -15,12 +19,29 @@ class Entity {
 }
 
 class Player extends Entity {
+    constructor({ position, velocity, attackBox }) {
+        super({position, velocity, attackBox})
+        this.attackBox = {
+            position: this.position,
+            length: 0
+        }
+    }
+
     draw() {
         ctx.strokeStyle = 'white'
         ctx.lineWidth = '4'
         ctx.shadowBlur = 5
         ctx.shadowColor = 'white'
         ctx.strokeRect(this.position.x, this.position.y, playerWidth, playerWidth)
+
+        this.attackBox.length = playerWidth
+        ctx.fillStyle = "blue";
+        ctx.fillRect(
+            this.attackBox.position.x, 
+            this.attackBox.position.y, 
+            this.attackBox.length, 
+            this.attackBox.length
+        )
     }
 
     update() {
@@ -31,50 +52,65 @@ class Player extends Entity {
 }
 
 class Enemy extends Entity {
+    constructor({ position, velocity, attackBox, speed, }) {
+        super({position, velocity, attackBox})
+        this.speed = speed
+    }
+
     draw() {
         ctx.shadowBlur = 0
         ctx.strokeStyle = 'red'
         ctx.strokeRect(this.position.x, this.position.y, playerWidth, playerWidth)
     }
+
+    update() {
+        this.draw()
+        this.position.x += this.velocity.x
+        this.position.y += this.velocity.y
+    }
 }
 
-let number = 0
 class Triangle extends Enemy {
     draw() {
         // ctx.beginPath();
         // ctx.arc(this.position.x, this.position.y, playerWidth/2, 0, 2 * Math.PI);
         // ctx.stroke();
-
-        let degree = Math.atan2(mouse.y-this.position.y, mouse.x-this.position.x)
-        if (degree < 0) {degree+=Math.PI*2}
-        let number = (degree / Math.PI) * 3
-        console.log(number)
-        // number += 0.01
-        // if(number > 2) {number=0}
-        // console.log(number)
-        let circleRadius = playerWidth/2
-        var triangle = {
-            //the first vertex is on the circumscribed circle at 0 radians where R is the radius of the circle ( R)
-            //you may decide to change this.
-            x1: this.position.x + circleRadius * Math.cos(number*Math.PI/3),
-            y1: this.position.y + circleRadius * Math.sin(number*Math.PI/3),
-            //the second vertex is on the circumscribed circle at 2*Math.PI/3 radians 
-            //you may decide to change this.
-            x2: this.position.x + circleRadius * Math.cos((number+2)*Math.PI/3),
-            y2: this.position.y + circleRadius * Math.sin((number+2)*Math.PI/3),
-            //calculate the 3-rd vertex
-            x3: this.position.x + circleRadius * Math.cos((number+4)*Math.PI/3),
-            y3: this.position.y + circleRadius * Math.sin((number+4)*Math.PI/3)
-          };
           
         ctx.strokeStyle = "red";
         ctx.shadowColor = "red";
 
+        var degree = Math.atan2(mouse.y-this.position.y, mouse.x-this.position.x)
+        if (degree < 0) {degree+=Math.PI*2}
+        let circleRadius = playerWidth/2
+        
+        var sides = 5
+        var triangle = makeShape(this.position, sides, circleRadius, degree)
+
+        this.velocity.x = Math.cos(degree) * this.speed
+        this.velocity.y = Math.sin(degree) * this.speed
+
+        this.attackBox.length = playerWidth 
+        this.attackBox.position.x = this.position.x-playerWidth/2
+        this.attackBox.position.y = this.position.y-playerWidth/2
+
+        //HITBOX
+        // ctx.fillStyle = "blue";
+        // ctx.fillRect(
+        //     this.attackBox.position.x, 
+        //     this.attackBox.position.y, 
+        //     this.attackBox.length, 
+        //     this.attackBox.length
+        // )
+        
+
         ctx.beginPath();
-        ctx.moveTo(triangle.x1, triangle.y1);
-        ctx.lineTo(triangle.x2, triangle.y2);
-        ctx.lineTo(triangle.x3, triangle.y3);
-        ctx.lineTo(triangle.x1, triangle.y1);
+        ctx.moveTo(triangle.x[0], triangle.y[0]);
+        for (let index = 1; index <= sides-1; index++) {
+            ctx.lineTo(triangle.x[index], triangle.y[index])
+        }
+        // ctx.lineTo(triangle.x+2, triangle.y2);
+        // ctx.lineTo(triangle.x3, triangle.y3);
+        ctx.lineTo(triangle.x[0], triangle.y[0]);
         ctx.closePath();
         ctx.stroke();
     }
