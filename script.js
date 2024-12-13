@@ -30,7 +30,7 @@ const player = new Player({
     }
 })
 
-const enemy = new Enemy({
+const enemy = new Triangle({
     position: {
         x: 300,
         y: 200
