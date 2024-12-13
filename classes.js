@@ -38,15 +38,20 @@ class Enemy extends Entity {
     }
 }
 
+let number = 0
 class Triangle extends Enemy {
     draw() {
         // ctx.beginPath();
         // ctx.arc(this.position.x, this.position.y, playerWidth/2, 0, 2 * Math.PI);
         // ctx.stroke();
+
         let degree = Math.atan2(mouse.y-this.position.y, mouse.x-this.position.x)
-        degree = degree*-1
         if (degree < 0) {degree+=Math.PI*2}
-        let number = degree / Math.PI
+        let number = (degree / Math.PI) * 3
+        console.log(number)
+        // number += 0.01
+        // if(number > 2) {number=0}
+        // console.log(number)
         let circleRadius = playerWidth/2
         var triangle = {
             //the first vertex is on the circumscribed circle at 0 radians where R is the radius of the circle ( R)
