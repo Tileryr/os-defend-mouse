@@ -43,20 +43,23 @@ class Triangle extends Enemy {
         // ctx.beginPath();
         // ctx.arc(this.position.x, this.position.y, playerWidth/2, 0, 2 * Math.PI);
         // ctx.stroke();
-        
+        let degree = Math.atan2(mouse.y-this.position.y, mouse.x-this.position.x)
+        degree = degree*-1
+        if (degree < 0) {degree+=Math.PI*2}
+        let number = degree / Math.PI
         let circleRadius = playerWidth/2
         var triangle = {
             //the first vertex is on the circumscribed circle at 0 radians where R is the radius of the circle ( R)
             //you may decide to change this.
-            x1: this.position.x + circleRadius,
-            y1: this.position.y,
+            x1: this.position.x + circleRadius * Math.cos(number*Math.PI/3),
+            y1: this.position.y + circleRadius * Math.sin(number*Math.PI/3),
             //the second vertex is on the circumscribed circle at 2*Math.PI/3 radians 
             //you may decide to change this.
-            x2: this.position.x + circleRadius * Math.cos(2*Math.PI/3),
-            y2: this.position.y + circleRadius * Math.sin(2*Math.PI/3),
+            x2: this.position.x + circleRadius * Math.cos((number+2)*Math.PI/3),
+            y2: this.position.y + circleRadius * Math.sin((number+2)*Math.PI/3),
             //calculate the 3-rd vertex
-            x3: this.position.x + circleRadius * Math.cos(4*Math.PI/3),
-            y3: this.position.y + circleRadius * Math.sin(4*Math.PI/3)
+            x3: this.position.x + circleRadius * Math.cos((number+4)*Math.PI/3),
+            y3: this.position.y + circleRadius * Math.sin((number+4)*Math.PI/3)
           };
           
         ctx.strokeStyle = "red";
