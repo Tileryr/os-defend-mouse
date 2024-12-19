@@ -23,7 +23,7 @@ class Player extends Entity {
         super({position, velocity, attackBox})
         this.attackBox = {
             position: this.position,
-            length: 0
+            length: playerWidth
         }
     }
 
@@ -70,7 +70,14 @@ class Enemy extends Entity {
     }
 }
 
-class Triangle extends Enemy {
+class Shape extends Enemy {
+    constructor({ position, velocity, attackBox, speed, sides, size}) {
+        super({position, velocity, attackBox, speed})
+        this.sides = sides
+        this.size = size
+        this.shape = makeShape(this.position, this.sides, this.size, 0)
+    }
+
     draw() {
         // ctx.beginPath();
         // ctx.arc(this.position.x, this.position.y, playerWidth/2, 0, 2 * Math.PI);
@@ -79,39 +86,44 @@ class Triangle extends Enemy {
         ctx.strokeStyle = "red";
         ctx.shadowColor = "red";
 
+        //HITBOX
+        ctx.fillStyle = "blue";
+        ctx.fillRect(
+            this.attackBox.position.x, 
+            this.attackBox.position.y, 
+            this.attackBox.length, 
+            this.attackBox.length
+        )
+        
+        ctx.beginPath();
+        ctx.moveTo(this.shape.x[0], this.shape.y[0]);
+        for (let index = 1; index <= this.sides-1; index++) {
+            ctx.lineTo(this.shape.x[index], this.shape.y[index])
+        }
+        ctx.lineTo(this.shape.x[0], this.shape.y[0]);
+        ctx.closePath();
+        ctx.stroke();
+    }
+
+    update() {
+        this.draw()
+        this.position.x += this.velocity.x
+        this.position.y += this.velocity.y
+        
         var degree = Math.atan2(mouse.y-this.position.y, mouse.x-this.position.x)
         if (degree < 0) {degree+=Math.PI*2}
-        let circleRadius = playerWidth/2
-        
-        var sides = 5
-        var triangle = makeShape(this.position, sides, circleRadius, degree)
+        this.size = playerWidth/2
+        this.shape = makeShape(this.position, this.sides, this.size, degree)
 
         this.velocity.x = Math.cos(degree) * this.speed
         this.velocity.y = Math.sin(degree) * this.speed
 
         this.attackBox.length = playerWidth 
-        this.attackBox.position.x = this.position.x-playerWidth/2
-        this.attackBox.position.y = this.position.y-playerWidth/2
+        this.attackBox.position.x = this.position.x-this.size
+        this.attackBox.position.y = this.position.y-this.size
 
-        //HITBOX
-        // ctx.fillStyle = "blue";
-        // ctx.fillRect(
-        //     this.attackBox.position.x, 
-        //     this.attackBox.position.y, 
-        //     this.attackBox.length, 
-        //     this.attackBox.length
-        // )
-        
-
-        ctx.beginPath();
-        ctx.moveTo(triangle.x[0], triangle.y[0]);
-        for (let index = 1; index <= sides-1; index++) {
-            ctx.lineTo(triangle.x[index], triangle.y[index])
+        if(rectangularCollision(this, player)) {
+            console.log("oh no")
         }
-        // ctx.lineTo(triangle.x+2, triangle.y2);
-        // ctx.lineTo(triangle.x3, triangle.y3);
-        ctx.lineTo(triangle.x[0], triangle.y[0]);
-        ctx.closePath();
-        ctx.stroke();
     }
 }

@@ -26,7 +26,7 @@ const player = new Player({
     },
 })
 
-const enemy = new Triangle({
+const enemy = new Shape({
     position: {
         x: 300,
         y: 200
@@ -35,7 +35,9 @@ const enemy = new Triangle({
         x: 0,
         y: 0
     },
-    speed: 5
+    speed: 10,
+    sides: 3,
+    size: playerWidth/2
 })
 
 function animate() {
@@ -64,5 +66,6 @@ function startup() {
 
 window.onload = () => {
     startup()
+    // animate()
     fullscreen(document.querySelector("#game"))
 }
