@@ -29,7 +29,7 @@ function heightPercent(percent) {
 
 function resizeWindow() {
     canvas.width = document.body.clientWidth;
-    canvas.height = document.body.clientHeight  
+    canvas.height = document.body.clientHeight - 0;
     playerWidth = widthPercent(playerPercent)
 }
 
@@ -53,14 +53,7 @@ function makeShape(position, sides, radius, rotation = 0) {
     }
 }
 
-function isColliding(hitbox, attackbox) {
-    return (hitbox.position.x < attackbox.position.x + attackbox.length && hitbox.position.x + hitbox.length > attackbox.position.x
-    && hitbox.position.y > hitbox.position.y + hitbox.length && hitbox.position.y + hitbox.length < attackbox.position.y)
-}
-
 function rectangularCollision( rectangle1, rectangle2 ) {
-    // console.log(rectangle1.attackBox.position.x + rectangle1.attackBox.length)
-    // console.log(rectangle2.position.x)    
     return (
         rectangle1.attackBox.position.x + rectangle1.attackBox.length >= rectangle2.attackBox.position.x &&
         rectangle1.attackBox.position.x <= rectangle2.attackBox.position.x + rectangle2.attackBox.length &&

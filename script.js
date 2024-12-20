@@ -69,3 +69,7 @@ window.onload = () => {
     // animate()
     fullscreen(document.querySelector("#game"))
 }
+
+document.addEventListener("wheel", (e) => {
+    player.shieldAngle += e.deltaY * 0.005
+})

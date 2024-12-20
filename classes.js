@@ -21,9 +21,11 @@ class Entity {
 class Player extends Entity {
     constructor({ position, velocity, attackBox }) {
         super({position, velocity, attackBox})
+        this.shieldAngle = 0
+        this.shieldRadians = 0
         this.attackBox = {
             position: this.position,
-            length: playerWidth
+            length: playerWidth*2
         }
     }
 
@@ -32,22 +34,33 @@ class Player extends Entity {
         ctx.lineWidth = '4'
         ctx.shadowBlur = 5
         ctx.shadowColor = 'white'
-        ctx.strokeRect(this.position.x, this.position.y, playerWidth, playerWidth)
 
-        this.attackBox.length = playerWidth
-        ctx.fillStyle = "blue";
-        ctx.fillRect(
-            this.attackBox.position.x, 
-            this.attackBox.position.y, 
-            this.attackBox.length, 
-            this.attackBox.length
-        )
+        ctx.beginPath();
+        ctx.arc(this.position.x, this.position.y, playerWidth*0.5, 0, 2 * Math.PI);
+        ctx.stroke();
+        
+        ctx.beginPath()
+        ctx.arc(this.position.x, this.position.y, playerWidth*0.8, this.shieldRadians-(Math.PI*0.25), this.shieldRadians+(Math.PI*0.25))
+        ctx.stroke()
+
+        // ctx.beginPath();
+        // ctx.arc(this.position.x, this.position.y, playerWidth/2, 0, 2 * Math.PI);
+        // ctx.stroke();
+        // ctx.fillStyle = "blue";
+        // ctx.fillRect(
+        //     this.attackBox.position.x, 
+        //     this.attackBox.position.y, 
+        //     this.attackBox.length, 
+        //     this.attackBox.length
+        // )
     }
 
     update() {
         this.draw()
-        this.position.y = lerp(this.position.y, mouse.y - (playerWidth/2), 0.1)
-        this.position.x = lerp(this.position.x, mouse.x - (playerWidth/2), 0.1)
+        this.position.y = lerp(this.position.y, mouse.y, 0.3)
+        this.position.x = lerp(this.position.x, mouse.x, 0.3)
+        this.attackBox.length = playerWidth
+        this.shieldRadians = this.shieldAngle%(Math.PI*2)
     }
 }
 
@@ -76,6 +89,7 @@ class Shape extends Enemy {
         this.sides = sides
         this.size = size
         this.shape = makeShape(this.position, this.sides, this.size, 0)
+        this.dead = false
     }
 
     draw() {
@@ -110,20 +124,41 @@ class Shape extends Enemy {
         this.position.x += this.velocity.x
         this.position.y += this.velocity.y
         
-        var degree = Math.atan2(mouse.y-this.position.y, mouse.x-this.position.x)
+        let degree = Math.atan2(mouse.y-this.position.y, mouse.x-this.position.x)
         if (degree < 0) {degree+=Math.PI*2}
         this.size = playerWidth/2
         this.shape = makeShape(this.position, this.sides, this.size, degree)
-
-        this.velocity.x = Math.cos(degree) * this.speed
-        this.velocity.y = Math.sin(degree) * this.speed
-
+        if(!this.dead) {
+            this.velocity.x = Math.cos(degree) * this.speed
+            this.velocity.y = Math.sin(degree) * this.speed
+        }
         this.attackBox.length = playerWidth 
         this.attackBox.position.x = this.position.x-this.size
         this.attackBox.position.y = this.position.y-this.size
 
         if(rectangularCollision(this, player)) {
-            console.log("oh no")
+            let collisionDegree = Math.atan2(this.position.y-mouse.y, this.position.x-mouse.x)
+            // console.log(degree)
+            // console.log(player.shieldRadians)
+            let angleDifference = (degree - player.shieldRadians + Math.PI) % (Math.PI*2) - Math.PI
+            console.log(Math.PI*-0.25)
+            console.log(collisionDegree)
+            if(Math.PI*-0.25 < collisionDegree < Math.PI*0.25) {
+                console.log("BLOCK")
+                // V
+                // this.velocity.x
+                // this.velocity.y
+                // N
+                // x
+                // cos(player.shieldRadians)
+                // y
+                // sin(player.shieldRadians)
+                // let bounce = v - (2 * (v ∙ n) * n)
+                // v dot n
+                this.velocity.x = this.velocity.x - (2 * (this.velocity.x * Math.cos(player.shieldRadians) + this.velocity.y * Math.sin(player.shieldRadians)) * Math.cos(player.shieldRadians))
+                this.velocity.y = this.velocity.y - (2 * (this.velocity.x * Math.cos(player.shieldRadians) + this.velocity.y * Math.sin(player.shieldRadians)) * Math.sin(player.shieldRadians))
+                this.dead = true
+            }
         }
     }
 }

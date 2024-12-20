@@ -4,6 +4,7 @@ html {
     background-size: contain;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     font-size: 16px;
+    overflow: hidden;
 }
 
 html, body, p {
@@ -29,7 +30,7 @@ html, body, p {
 }
 
 .startup {
-    padding: 8px;
+    padding: 0;
     height: 100vh;
     background-color: black;
     transition: 0.2s;
